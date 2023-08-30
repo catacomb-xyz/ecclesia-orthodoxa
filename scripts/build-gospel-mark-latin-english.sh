@@ -4,8 +4,8 @@ set -x
 
 SCRIPT_DIR=$(dirname "$0")
 
-LA_DIR=$SCRIPT_DIR/../biblia-vulgata/marcus/
-EN_DIR=$SCRIPT_DIR/../biblia-vulgata/marcus/english
+LA_DIR=$SCRIPT_DIR/../biblia-vulgata/novum-testamentum/02-marcus/
+EN_DIR=$SCRIPT_DIR/../biblia-vulgata/novum-testamentum/02-marcus/english
 TMP_DIR=$SCRIPT_DIR/.tmp
 
 rm -rfv $TMP_DIR
