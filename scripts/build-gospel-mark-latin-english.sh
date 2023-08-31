@@ -14,10 +14,29 @@ mkdir -v $TMP_DIR
 # verse numbers
 for F in $LA_DIR/*.txt
 do
-  NAME=$(basename --suffix=".txt" "$F").tex
-  echo $TMP_DIR/$NAME
-  nl -w1 -s'}\hspace{1ex}' $F > $TMP_DIR/$NAME
-  sed -i 's/^/\\noindent\\textsuperscript{/' $TMP_DIR/$NAME
+  NUM=$(basename --suffix=".txt" "$F")
+  echo $TMP_DIR/$NUM
+
+  F_TMP="$TMP_DIR"/"$NUM".tmp
+
+  nl -w1 -s'}\hspace{1ex}' $F > $F_TMP
+  sed -i 's/^/\\noindent\\textsuperscript{/' $F_TMP
+  sed -i 's/$/\\newline/' $F_TMP
+
+  F_EN="$EN_DIR"/"$NUM".txt
+  F_EN_TMP="$TMP_DIR"/"$NUM"EN.tmp
+
+  cp $F_EN $F_EN_TMP
+  sed -i 's/^/\\noindent{\\scriptsize /' $F_EN_TMP
+  sed -i 's/$/}/' $F_EN_TMP
+
+  awk '{print; if(getline < "'$F_EN_TMP'") print}' $F_TMP >> $TMP_DIR/$NUM.tex
+done
+
+# line breaks
+for F in $TMP_DIR/*.tex
+do
+  sed -i '0~2 a\\' $F
 done
 
 # chapter title
@@ -26,23 +45,18 @@ do
   NAME=$(basename --suffix=".tex" "$F")
   NUM=$((10#$NAME))
   STR="\\\section{Marcus $NUM}"
-  sed -i "1s/^/$STR\n/" $F
-done
-
-# line breaks
-for F in $TMP_DIR/*.tex
-do
-  sed -i -e 's/$/\n/' $F
+  sed -i "1s/^/$STR\n\n/" $F
 done
 
 echo """
-\documentclass{article}
+\documentclass[8pt]{report}
 
-\title{Evangelum} % Sets article title
-\author{St. Marcus} % Sets authors name
+\title{Ēvangelium} % Sets article title
+\author{Sānctus Mārcus} % Sets authors name
 \date{\today} % Sets date for date compiled
 
 \usepackage{indentfirst}
+\usepackage[skip=10pt plus1pt, indent=0pt]{parskip}
 
 \usepackage{titlesec}
 
